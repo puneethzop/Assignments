@@ -17,7 +17,7 @@ var tasks []*Task
 func AddTask(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	body, _ := io.ReadAll(r.Body)
-	tasks = append(tasks, &Task{Task: string(body), Completed: false})
+	tasks = append(tasks, &Task{string(body), false})
 }
 
 func getByID(w http.ResponseWriter, r *http.Request) {
@@ -60,7 +60,7 @@ func main() {
 	http.HandleFunc("POST /task", AddTask)
 	http.HandleFunc("GET /task/{id}", getByID)
 	http.HandleFunc("GET /task", viewTask)
-	http.HandleFunc("PATCH /task/{id}", completeTask)
+	http.HandleFunc("PUT /task/{id}", completeTask)
 	http.HandleFunc("DELETE /task/{id}", deleteTask)
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
