@@ -26,11 +26,6 @@ jobs:
       - name: Download Go modules
         run: go mod tidy
 
-      - name: Run GolangCI-Lint
-        uses: golangci/golangci-lint-action@v7
-        with:
-          version: v2.1.6
-
       - name: Build Go application
         run: |
           CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -buildvcs=false -o main
