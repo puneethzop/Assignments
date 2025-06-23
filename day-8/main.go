@@ -3,102 +3,144 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
+	"time"
 )
 
+// Task represents a to-do item.
 type Task struct {
 	Task      string `json:"task"`
 	Completed bool   `json:"completed"`
 }
 
-var tasks []*Task
+// TaskManager handles task storage and operations.
+type TaskManager struct {
+	tasks []*Task
+}
 
-func addTask(w http.ResponseWriter, r *http.Request) {
+// AddTask handles POST /task.
+func (tm *TaskManager) addTask(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, "Error reading body", http.StatusBadRequest)
 		return
 	}
 
 	task := string(body)
-	tasks = append(tasks, &Task{Task: task, Completed: false})
+	tm.tasks = append(tm.tasks, &Task{Task: task, Completed: false})
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 
 	message := fmt.Sprintf("Task '%s' added successfully", task)
-	resp, _ := json.Marshal(message)
-	w.Write(resp)
+	resp, err := json.Marshal(message)
 
+	if err == nil {
+		if _, err := w.Write(resp); err != nil {
+			fmt.Println("Failed to write response:", err)
+		}
+	}
 }
 
-func getByID(w http.ResponseWriter, r *http.Request) {
+// GetByID handles GET /task/{id}.
+func (tm *TaskManager) getByID(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
+
 	id, err := strconv.Atoi(r.PathValue("id"))
-	if err != nil || id < 1 || id > len(tasks) {
+	if err != nil || id < 0 || id >= len(tm.tasks) {
 		http.Error(w, "Invalid task ID", http.StatusBadRequest)
 		return
 	}
 
-	data, _ := json.Marshal(tasks[id])
-	w.WriteHeader(http.StatusOK)
-	w.Write(data)
-}
-
-func viewTask(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	data, _ := json.Marshal(tasks)
-	w.Write(data)
+
+	data, err := json.Marshal(tm.tasks[id])
+	if err == nil {
+		if _, err := w.Write(data); err != nil {
+			fmt.Println("Failed to write response:", err)
+		}
+	}
 }
 
-func completeTask(w http.ResponseWriter, r *http.Request) {
+// ViewAll handles GET /task.
+func (tm *TaskManager) viewAll(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	data, err := json.Marshal(tm.tasks)
+	if err == nil {
+		if _, err := w.Write(data); err != nil {
+			fmt.Println("Failed to write response:", err)
+		}
+	}
+}
+
+// CompleteTask handles PATCH /task/{id}.
+func (tm *TaskManager) completeTask(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
+
 	id, err := strconv.Atoi(r.PathValue("id"))
-	if err != nil || id < 1 || id > len(tasks) {
+	if err != nil || id < 0 || id >= len(tm.tasks) {
 		http.Error(w, "Invalid task ID", http.StatusBadRequest)
 		return
 	}
 
-	tasks[id].Completed = true
-
-	message := fmt.Sprintf("Task '%s' marked as completed", tasks[id].Task)
+	tm.tasks[id].Completed = true
+	message := fmt.Sprintf("Task '%s' marked as completed", tm.tasks[id].Task)
 
 	w.Header().Set("Content-Type", "application/json")
-	resp, _ := json.Marshal(message)
-	w.Write(resp)
+
+	resp, err := json.Marshal(message)
+	if err == nil {
+		if _, err := w.Write(resp); err != nil {
+			fmt.Println("Failed to write response:", err)
+		}
+	}
 }
 
-func deleteTask(w http.ResponseWriter, r *http.Request) {
+// DeleteTask handles DELETE /task/{id}.
+func (tm *TaskManager) deleteTask(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
+
 	id, err := strconv.Atoi(r.PathValue("id"))
-	if err != nil || id < 1 || id > len(tasks) {
+	if err != nil || id < 0 || id >= len(tm.tasks) {
 		http.Error(w, "Invalid task ID", http.StatusBadRequest)
 		return
 	}
-	message := fmt.Sprintf("Task '%s' deleted successfully", tasks[id].Task)
 
-	tasks = append(tasks[:id], tasks[id+1:]...)
+	message := fmt.Sprintf("Task '%s' deleted successfully", tm.tasks[id].Task)
+	tm.tasks = append(tm.tasks[:id], tm.tasks[id+1:]...)
 
 	w.Header().Set("Content-Type", "application/json")
-	resp, _ := json.Marshal(message)
-	w.Write(resp)
+
+	resp, err := json.Marshal(message)
+	if err == nil {
+		if _, err := w.Write(resp); err != nil {
+			fmt.Println("Failed to write response:", err)
+		}
+	}
 }
 
 func main() {
+	tm := &TaskManager{}
 
-	http.HandleFunc("POST /task", addTask)
-	http.HandleFunc("GET /task/{id}", getByID)
-	http.HandleFunc("GET /task", viewTask)
-	http.HandleFunc("PATCH /task/{id}", completeTask)
-	http.HandleFunc("DELETE /task/{id}", deleteTask)
+	http.HandleFunc("POST /task", tm.addTask)
+	http.HandleFunc("GET /task/{id}", tm.getByID)
+	http.HandleFunc("GET /task", tm.viewAll)
+	http.HandleFunc("PATCH /task/{id}", tm.completeTask)
+	http.HandleFunc("DELETE /task/{id}", tm.deleteTask)
 
-	err := http.ListenAndServe(":8080", nil)
+	server := &http.Server{
+		Addr:         ":8080",
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  15 * time.Second,
+	}
 
-	if err != nil {
-		fmt.Println("Not able to start server")
+	if err := server.ListenAndServe(); err != nil {
+		fmt.Println("Failed to start server:", err)
 	}
 }
