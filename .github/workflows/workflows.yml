@@ -29,9 +29,9 @@ jobs:
       - name: Run golangci link
         uses: golangci/golangci-lint-action@v7
         with:
-          version: v2.1.6
-          working-directory: day-8/
+            version: v2.1.6
+            working-directory: day-8/
 
-#      - name: Build Go application
-#        run: |
-#          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -buildvcs=false -o main
+      #      - name: Build Go application
+      #        run: |
+      #          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -buildvcs=false -o main
