@@ -30,19 +30,32 @@ func (tm *TaskManager) addTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	task := string(body)
-	tm.tasks = append(tm.tasks, &Task{Task: task, Completed: false})
+	var input Task
+	err = json.Unmarshal(body, &input)
+
+	if err != nil {
+		http.Error(w, "Invalid JSON input", http.StatusBadRequest)
+		return
+	}
+
+	tm.tasks = append(tm.tasks, &Task{
+		Task:      input.Task,
+		Completed: false,
+	})
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 
-	message := fmt.Sprintf("Task '%s' added successfully", task)
+	message := fmt.Sprintf("Task '%s' added successfully", input.Task)
 	resp, err := json.Marshal(message)
 
-	if err == nil {
-		if _, err := w.Write(resp); err != nil {
-			fmt.Println("Failed to write response:", err)
-		}
+	if err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
+	}
+
+	if _, writeErr := w.Write(resp); writeErr != nil {
+		fmt.Println("Failed to write response:", writeErr)
 	}
 }
 
@@ -59,10 +72,13 @@ func (tm *TaskManager) getByID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	data, err := json.Marshal(tm.tasks[id])
-	if err == nil {
-		if _, err := w.Write(data); err != nil {
-			fmt.Println("Failed to write response:", err)
-		}
+	if err != nil {
+		http.Error(w, "Failed to encode task", http.StatusInternalServerError)
+		return
+	}
+
+	if _, writeErr := w.Write(data); writeErr != nil {
+		fmt.Println("Failed to write response:", writeErr)
 	}
 }
 
@@ -71,10 +87,13 @@ func (tm *TaskManager) viewAll(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	data, err := json.Marshal(tm.tasks)
-	if err == nil {
-		if _, err := w.Write(data); err != nil {
-			fmt.Println("Failed to write response:", err)
-		}
+	if err != nil {
+		http.Error(w, "Failed to encode tasks", http.StatusInternalServerError)
+		return
+	}
+
+	if _, writeErr := w.Write(data); writeErr != nil {
+		fmt.Println("Failed to write response:", writeErr)
 	}
 }
 
@@ -94,10 +113,13 @@ func (tm *TaskManager) completeTask(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	resp, err := json.Marshal(message)
-	if err == nil {
-		if _, err := w.Write(resp); err != nil {
-			fmt.Println("Failed to write response:", err)
-		}
+	if err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
+	}
+
+	if _, writeErr := w.Write(resp); writeErr != nil {
+		fmt.Println("Failed to write response:", writeErr)
 	}
 }
 
@@ -117,10 +139,13 @@ func (tm *TaskManager) deleteTask(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	resp, err := json.Marshal(message)
-	if err == nil {
-		if _, err := w.Write(resp); err != nil {
-			fmt.Println("Failed to write response:", err)
-		}
+	if err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
+	}
+
+	if _, writeErr := w.Write(resp); writeErr != nil {
+		fmt.Println("Failed to write response:", writeErr)
 	}
 }
 
@@ -139,6 +164,8 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  15 * time.Second,
 	}
+
+	fmt.Println("Server listening on http://localhost:8080")
 
 	if err := server.ListenAndServe(); err != nil {
 		fmt.Println("Failed to start server:", err)
