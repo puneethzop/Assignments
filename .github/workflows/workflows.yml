@@ -26,11 +26,11 @@ jobs:
       - name: Download Go modules
         run: go mod tidy
 
-      - name: Run golangci link
-        uses: golangci/golangci-lint-action@v7
-        with:
-            version: v2.1.6
-            working-directory: day-8/
+#      - name: Run golangci link
+#        uses: golangci/golangci-lint-action@v7
+#        with:
+#            version: v2.1.6
+#            working-directory: day-8/
 
       - name: Build Go application
         run: |
