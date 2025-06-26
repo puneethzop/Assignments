@@ -51,6 +51,7 @@ func (db *input) addTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
+
 }
 
 func (db *input) getByID(w http.ResponseWriter, r *http.Request) {
