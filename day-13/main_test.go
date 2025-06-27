@@ -37,12 +37,12 @@ func TestSQL(t *testing.T) {
 	db.data = openTestDB(t)
 	defer db.data.Close()
 
-	testPayload := `{ "task": "Testing"}`
+	body := `{ "task": "Testing"}`
 
 	var initialCount int
 	_ = db.data.QueryRow("SELECT count(*) FROM TASKS").Scan(&initialCount)
 
-	req := httptest.NewRequest(http.MethodPost, "/task", strings.NewReader(testPayload))
+	req := httptest.NewRequest(http.MethodPost, "/task", strings.NewReader(body))
 	resp := httptest.NewRecorder()
 	db.addTask(resp, req)
 
