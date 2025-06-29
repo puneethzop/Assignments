@@ -2,16 +2,20 @@ package userservice
 
 import (
 	"3layerarch/models"
-	"3layerarch/store/user"
 	"database/sql"
 	"errors"
 )
 
-type Service struct {
-	Store *userstore.Store
+type UserStore interface {
+	CreateUser(u models.User) error
+	GetUser(id int) (models.User, error)
 }
 
-func New(store *userstore.Store) *Service {
+type Service struct {
+	Store UserStore
+}
+
+func New(store UserStore) *Service {
 	return &Service{Store: store}
 }
 
@@ -19,19 +23,19 @@ func (s *Service) CreateUser(u models.User) error {
 	if u.Name == "" {
 		return errors.New("user name cannot be empty")
 	}
-	return s.Store.Create(u)
+	return s.Store.CreateUser(u)
 }
 
 func (s *Service) GetUser(id int) (models.User, error) {
 	if id <= 0 {
 		return models.User{}, errors.New("invalid user ID")
 	}
-	user, err := s.Store.GetByID(id)
+	u, err := s.Store.GetUser(id)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return models.User{}, errors.New("user not found")
 		}
 		return models.User{}, err
 	}
-	return user, nil
+	return u, nil
 }

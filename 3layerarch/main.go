@@ -29,7 +29,8 @@ func main() {
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS TASKS (
 		id INT AUTO_INCREMENT PRIMARY KEY,
 		task TEXT,
-		completed BOOL DEFAULT FALSE
+		completed BOOL DEFAULT FALSE,
+		user_id int         
 	);`)
 	if err != nil {
 		log.Fatal("Failed to create TASKS table:", err)
@@ -44,15 +45,15 @@ func main() {
 		log.Fatal("Failed to create USERS table:", err)
 	}
 
-	// Task dependency setup
-	taskStore := taskstore.New(db)
-	taskService := taskservice.New(taskStore)
-	taskHandler := taskhandler.New(taskService)
-
 	// User dependency setup
 	userStore := userstore.New(db)
 	userService := userservice.New(userStore)
 	userHandler := userhandler.New(userService)
+
+	// Task dependency setup
+	taskStore := taskstore.New(db)
+	taskService := taskservice.New(taskStore, userService)
+	taskHandler := taskhandler.New(taskService)
 
 	// Task routes
 	http.HandleFunc("POST /task", taskHandler.CreateTask)

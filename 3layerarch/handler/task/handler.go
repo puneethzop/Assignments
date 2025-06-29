@@ -7,14 +7,21 @@ import (
 	"strconv"
 
 	"3layerarch/models"
-	taskservice "3layerarch/service/task"
 )
 
-type Handler struct {
-	Service *taskservice.Service
+type TaskService interface {
+	CreateTask(t models.Task) error
+	GetTask(id int) (models.Task, error)
+	ViewTasks() ([]models.Task, error)
+	UpdateTask(id int) error
+	DeleteTask(id int) error
 }
 
-func New(service *taskservice.Service) *Handler {
+type Handler struct {
+	Service TaskService
+}
+
+func New(service TaskService) *Handler {
 	return &Handler{Service: service}
 }
 

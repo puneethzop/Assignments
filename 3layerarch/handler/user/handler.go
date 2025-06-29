@@ -7,14 +7,18 @@ import (
 	"strconv"
 
 	"3layerarch/models"
-	userservice "3layerarch/service/user"
 )
 
-type Handler struct {
-	Service *userservice.Service
+type UserService interface {
+	CreateUser(u models.User) error
+	GetUser(id int) (models.User, error)
 }
 
-func New(service *userservice.Service) *Handler {
+type Handler struct {
+	Service UserService
+}
+
+func New(service UserService) *Handler {
 	return &Handler{Service: service}
 }
 

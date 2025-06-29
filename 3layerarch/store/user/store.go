@@ -6,20 +6,20 @@ import (
 )
 
 type Store struct {
-	DB *sql.DB
+	db *sql.DB
 }
 
 func New(db *sql.DB) *Store {
-	return &Store{DB: db}
+	return &Store{db: db}
 }
 
-func (s *Store) Create(user models.User) error {
-	_, err := s.DB.Exec("INSERT INTO USERS (name) VALUES (?)", user.Name)
+func (s *Store) CreateUser(u models.User) error {
+	_, err := s.db.Exec("INSERT INTO USERS (name) VALUES (?)", u.Name)
 	return err
 }
 
-func (s *Store) GetByID(id int) (models.User, error) {
-	var user models.User
-	err := s.DB.QueryRow("SELECT id, name FROM USERS WHERE id = ?", id).Scan(&user.ID, &user.Name)
-	return user, err
+func (s *Store) GetUser(id int) (models.User, error) {
+	var u models.User
+	err := s.db.QueryRow("SELECT id, name FROM USERS WHERE id = ?", id).Scan(&u.ID, &u.Name)
+	return u, err
 }
