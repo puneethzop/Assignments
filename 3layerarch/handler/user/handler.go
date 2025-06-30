@@ -2,6 +2,7 @@ package userhandler
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -57,5 +58,7 @@ func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	b, _ := json.Marshal(u)
-	w.Write(b)
+	if _, err := w.Write(b); err != nil {
+		fmt.Printf("failed to write response: %v\n", err)
+	}
 }

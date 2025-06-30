@@ -3,6 +3,7 @@ package taskstore
 import (
 	"3layerarch/models"
 	"database/sql"
+	"log"
 )
 
 type Store struct {
@@ -30,7 +31,11 @@ func (s *Store) ViewTasks() ([]models.Task, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer func() {
+		if err := rows.Close(); err != nil {
+			log.Println("Error closing rows:", err)
+		}
+	}()
 
 	var tasks []models.Task
 	for rows.Next() {

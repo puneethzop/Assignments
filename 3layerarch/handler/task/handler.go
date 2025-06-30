@@ -2,6 +2,7 @@ package taskhandler
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -60,7 +61,9 @@ func (h *Handler) GetTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	b, _ := json.Marshal(t)
-	w.Write(b)
+	if _, err := w.Write(b); err != nil {
+		fmt.Printf("failed to write response: %v\n", err)
+	}
 }
 
 func (h *Handler) ViewTasks(w http.ResponseWriter, _ *http.Request) {
@@ -70,7 +73,9 @@ func (h *Handler) ViewTasks(w http.ResponseWriter, _ *http.Request) {
 		return
 	}
 	b, _ := json.Marshal(tasks)
-	w.Write(b)
+	if _, err := w.Write(b); err != nil {
+		fmt.Printf("failed to write response: %v\n", err)
+	}
 }
 
 func (h *Handler) UpdateTask(w http.ResponseWriter, r *http.Request) {

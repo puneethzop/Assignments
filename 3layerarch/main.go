@@ -23,7 +23,11 @@ func main() {
 	if err != nil {
 		log.Fatal("DB connection error:", err)
 	}
-	defer db.Close()
+	defer func() {
+		if err := db.Close(); err != nil {
+			log.Println("Error closing DB:", err)
+		}
+	}()
 
 	// Ensure TASKS table exists
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS TASKS (
