@@ -3,6 +3,7 @@ package taskstore
 import (
 	"3layerarch/models"
 	"database/sql"
+	"gofr.dev/pkg/gofr"
 	"log"
 )
 
@@ -14,20 +15,20 @@ func New(db *sql.DB) *Store {
 	return &Store{db: db}
 }
 
-func (s *Store) CreateTask(t models.Task) error {
-	_, err := s.db.Exec("INSERT INTO TASKS (task, completed, user_id) VALUES (?, ?, ?)", t.Task, t.Completed, t.UserID)
+func (s *Store) CreateTask(ctx *gofr.Context, t models.Task) error {
+	_, err := ctx.SQL.ExecContext(ctx, "INSERT INTO TASKS (task, completed, user_id) VALUES (?, ?, ?)", t.Task, t.Completed, t.UserID)
 	return err
 }
 
-func (s *Store) GetTask(id int) (models.Task, error) {
+func (s *Store) GetTask(ctx *gofr.Context, id int) (models.Task, error) {
 	var t models.Task
-	err := s.db.QueryRow("SELECT id, task, completed, user_id FROM TASKS WHERE id = ?", id).
+	err := ctx.SQL.QueryRowContext(ctx, "SELECT id, task, completed, user_id FROM TASKS WHERE id = ?", id).
 		Scan(&t.ID, &t.Task, &t.Completed, &t.UserID)
 	return t, err
 }
 
-func (s *Store) ViewTasks() ([]models.Task, error) {
-	rows, err := s.db.Query("SELECT id, task, completed, user_id FROM TASKS")
+func (s *Store) ViewTasks(ctx *gofr.Context) ([]models.Task, error) {
+	rows, err := ctx.SQL.QueryContext(ctx, "SELECT id, task, completed, user_id FROM TASKS")
 	if err != nil {
 		return nil, err
 	}
@@ -48,12 +49,12 @@ func (s *Store) ViewTasks() ([]models.Task, error) {
 	return tasks, nil
 }
 
-func (s *Store) UpdateTask(id int) error {
-	_, err := s.db.Exec("UPDATE TASKS SET completed = true WHERE id = ?", id)
+func (s *Store) UpdateTask(ctx *gofr.Context, id int) error {
+	_, err := ctx.SQL.ExecContext(ctx, "UPDATE TASKS SET completed = true WHERE id = ?", id)
 	return err
 }
 
-func (s *Store) DeleteTask(id int) error {
-	_, err := s.db.Exec("DELETE FROM TASKS WHERE id = ?", id)
+func (s *Store) DeleteTask(ctx *gofr.Context, id int) error {
+	_, err := ctx.SQL.ExecContext(ctx, "DELETE FROM TASKS WHERE id = ?", id)
 	return err
 }
