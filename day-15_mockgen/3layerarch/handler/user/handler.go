@@ -10,11 +10,6 @@ import (
 	"3layerarch/models"
 )
 
-//type UserService interface {
-//	CreateUser(u models.User) error
-//	GetUser(id int) (models.User, error)
-//}
-
 type Handler struct {
 	Service UserService
 }
@@ -23,6 +18,16 @@ func New(service UserService) *Handler {
 	return &Handler{Service: service}
 }
 
+// CreateUser godoc
+// @Summary Create a new user
+// @Description Creates a user with the given JSON body
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param user body models.User true "User to create"
+// @Success 201 {string} string "Created"
+// @Failure 400 {string} string "Bad Request"
+// @Router /user [post]
 func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil || len(body) == 0 {
@@ -41,6 +46,15 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
+// GetUser godoc
+// @Summary Get user by ID
+// @Description Returns a user given their ID
+// @Tags users
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} models.User
+// @Failure 400 {string} string "Bad Request"
+// @Router /user/{id} [get]
 func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
 	idStr := r.PathValue("id")
 	if idStr == "" {

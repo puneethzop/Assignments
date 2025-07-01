@@ -18,6 +18,16 @@ func New(service TaskService) *Handler {
 	return &Handler{Service: service}
 }
 
+// CreateTask godoc
+// @Summary Create a new task
+// @Description Creates a task with the given JSON body
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param task body models.Task true "Task to create"
+// @Success 201 {string} string "Created"
+// @Failure 400 {string} string "Bad Request"
+// @Router /task [post]
 func (h *Handler) CreateTask(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil || len(body) == 0 {
@@ -36,6 +46,15 @@ func (h *Handler) CreateTask(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
+// GetTask godoc
+// @Summary Get task by ID
+// @Description Returns a task given its ID
+// @Tags tasks
+// @Produce json
+// @Param id path int true "Task ID"
+// @Success 200 {object} models.Task
+// @Failure 400 {string} string "Bad Request"
+// @Router /task/{id} [get]
 func (h *Handler) GetTask(w http.ResponseWriter, r *http.Request) {
 	idStr := r.PathValue("id")
 	if idStr == "" {
@@ -58,6 +77,14 @@ func (h *Handler) GetTask(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// ViewTasks godoc
+// @Summary List all tasks
+// @Description Returns a list of all tasks
+// @Tags tasks
+// @Produce json
+// @Success 200 {array} models.Task
+// @Failure 500 {string} string "Internal Server Error"
+// @Router /task [get]
 func (h *Handler) ViewTasks(w http.ResponseWriter, _ *http.Request) {
 	tasks, err := h.Service.ViewTasks()
 	if err != nil {
@@ -70,6 +97,14 @@ func (h *Handler) ViewTasks(w http.ResponseWriter, _ *http.Request) {
 	}
 }
 
+// UpdateTask godoc
+// @Summary Update task status
+// @Description Marks a task as completed
+// @Tags tasks
+// @Param id path int true "Task ID"
+// @Success 200 {string} string "OK"
+// @Failure 400 {string} string "Bad Request"
+// @Router /task/{id} [put]
 func (h *Handler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	idStr := r.PathValue("id")
 	if idStr == "" {
@@ -88,6 +123,14 @@ func (h *Handler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+// DeleteTask godoc
+// @Summary Delete task
+// @Description Deletes a task by ID
+// @Tags tasks
+// @Param id path int true "Task ID"
+// @Success 200 {string} string "OK"
+// @Failure 400 {string} string "Bad Request"
+// @Router /task/{id} [delete]
 func (h *Handler) DeleteTask(w http.ResponseWriter, r *http.Request) {
 	idStr := r.PathValue("id")
 	if idStr == "" {
