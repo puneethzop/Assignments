@@ -31,10 +31,10 @@ func (h *Handler) CreateUser(ctx *gofr.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	if err := h.Service.CreateUser(u); err != nil {
+	if err := h.Service.CreateUser(ctx, u); err != nil {
 		return nil, err
 	}
-	
+
 	return "error", nil
 }
 
@@ -54,7 +54,7 @@ func (h *Handler) GetUser(ctx *gofr.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	u, err := h.Service.GetUser(id)
+	u, err := h.Service.GetUser(ctx, id)
 	if err != nil {
 		return nil, err
 	}

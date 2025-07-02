@@ -33,7 +33,7 @@ func (h *Handler) CreateTask(ctx *gofr.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	err = h.Service.CreateTask(t)
+	err = h.Service.CreateTask(ctx, t)
 
 	if err != nil {
 		return nil, err
@@ -58,7 +58,7 @@ func (h *Handler) GetTask(ctx *gofr.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	t, err := h.Service.GetTask(id)
+	t, err := h.Service.GetTask(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (h *Handler) GetTask(ctx *gofr.Context) (interface{}, error) {
 // @Failure 500 {string} string "Internal Server Error"
 // @Router /task [get]
 func (h *Handler) ViewTasks(ctx *gofr.Context) (interface{}, error) {
-	tasks, err := h.Service.ViewTasks()
+	tasks, err := h.Service.ViewTasks(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func (h *Handler) UpdateTask(ctx *gofr.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	if err := h.Service.UpdateTask(id); err != nil {
+	if err := h.Service.UpdateTask(ctx, id); err != nil {
 		return nil, err
 	}
 
@@ -120,7 +120,7 @@ func (h *Handler) DeleteTask(ctx *gofr.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	if err := h.Service.DeleteTask(id); err != nil {
+	if err := h.Service.DeleteTask(ctx, id); err != nil {
 		return nil, err
 	}
 
