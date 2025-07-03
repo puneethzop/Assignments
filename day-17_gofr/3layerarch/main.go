@@ -38,19 +38,12 @@ func main() {
 	app := gofr.New()
 	app.Migrate(migrations.All())
 
-	// Initialize DB
-	db, err := sql.Open("mysql", "root:root123@tcp(localhost:3306)/test_db")
-	if err != nil {
-		log.Println("Failed to connect to DB:", err)
-		return
-	}
-
 	// Setup dependencies
-	userStore := userstore.New(db)
+	userStore := userstore.New()
 	userService := userservice.New(userStore)
 	userHandler := userhandler.New(userService)
 
-	taskStore := taskstore.New(db)
+	taskStore := taskstore.New()
 	taskService := taskservice.New(taskStore, userService)
 	taskHandler := taskhandler.New(taskService)
 
