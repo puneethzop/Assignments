@@ -2,7 +2,7 @@ package migrations
 
 import "gofr.dev/pkg/gofr/migration"
 
-const createUser = `REATE TABLE IF NOT EXISTS USERS (
+const createUser = `CREATE TABLE IF NOT EXISTS USERS (
 		id INT AUTO_INCREMENT PRIMARY KEY,
 		name VARCHAR(100)
 	);`
