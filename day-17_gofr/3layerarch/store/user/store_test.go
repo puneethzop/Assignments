@@ -1,8 +1,7 @@
-// Make sure this file is named store_test.go
-package userstore // Ensure this matches your user.go package if they are in the same directory
+package userstore
 
 import (
-	"3layerarch/models" // Adjust this import path if your models package is located elsewhere
+	"3layerarch/models"
 	"database/sql"
 	"github.com/stretchr/testify/assert"
 	"gofr.dev/pkg/gofr"
@@ -50,12 +49,9 @@ func TestCreateUser(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mockfunc()
 
-			var db *sql.DB // db is not used directly, only through ctx.SQL
-			// Assuming 'repo' is the variable name used in your store_test.go
-			// If it's 'store', keep 'store'. The error message says 'repo'.
-			repo := New(db)
+			var db *sql.DB
 
-			// FIX: Pass 'ctx' as the first argument
+			repo := New(db)
 			err := repo.CreateUser(ctx, tt.user)
 			if !assert.Equal(t, tt.err, err) {
 				t.Errorf("%v : error = %v, wantErr %v", tt.name, err, tt.err)
@@ -119,12 +115,9 @@ func TestGetUser(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mockfunc()
 
-			var db *sql.DB // db is not used directly, only through ctx.SQL
-			// Assuming 'repo' is the variable name used in your store_test.go
-			// If it's 'store', keep 'store'. The error message says 'repo'.
+			var db *sql.DB
 			repo := New(db)
 
-			// FIX: Pass 'ctx' as the first argument
 			ans, err := repo.GetUser(ctx, tt.userID)
 			if !assert.Equal(t, tt.err, err) {
 				t.Errorf("%v : error = %v, wantErr %v", tt.name, err, tt.err)

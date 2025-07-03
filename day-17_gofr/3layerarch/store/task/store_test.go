@@ -41,7 +41,7 @@ func TestStore_CreateTask(t *testing.T) {
 			mockfunc: func() {
 				mock.SQL.ExpectExec("INSERT INTO TASKS (task, completed, user_id) VALUES (?, ?, ?)").
 					WithArgs("Buy groceries", false, 1).
-					WillReturnError(errors.New("duplicate entry")) // Simulate a DB error
+					WillReturnError(errors.New("duplicate entry"))
 			},
 			err: errors.New("duplicate entry"),
 		},
@@ -50,7 +50,7 @@ func TestStore_CreateTask(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mockfunc()
 
-			var db *sql.DB // db is not used directly, gofr.Context.SQL is mocked
+			var db *sql.DB
 			svc := New(db)
 
 			err := svc.CreateTask(ctx, tt.task)
@@ -159,16 +159,16 @@ func TestStore_ViewTasks(t *testing.T) {
 				mock.SQL.ExpectQuery("SELECT id, task, completed, user_id FROM TASKS").
 					WillReturnError(errors.New("db connection error"))
 			},
-			expAns: nil, // If there's a DB error before scanning, the function returns nil
+			expAns: nil,
 			err:    errors.New("db connection error"),
 		},
 		{
 			name: "Empty ViewTasks",
 			mockfunc: func() {
 				mock.SQL.ExpectQuery("SELECT id, task, completed, user_id FROM TASKS").
-					WillReturnRows(mock.SQL.NewRows([]string{"id", "task", "completed", "user_id"})) // No rows
+					WillReturnRows(mock.SQL.NewRows([]string{"id", "task", "completed", "user_id"}))
 			},
-			expAns: []models.Task{}, // CHANGE THIS: Expect an empty, non-nil slice
+			expAns: []models.Task{},
 			err:    nil,
 		},
 	}
@@ -211,7 +211,7 @@ func TestStore_UpdateTask(t *testing.T) {
 			mockfunc: func() {
 				mock.SQL.ExpectExec("UPDATE TASKS SET completed = true WHERE id = ?").
 					WithArgs(1).
-					WillReturnResult(mock.SQL.NewResult(0, 1)) // Rows affected: 1
+					WillReturnResult(mock.SQL.NewResult(0, 1))
 			},
 			err: nil,
 		},
@@ -221,9 +221,9 @@ func TestStore_UpdateTask(t *testing.T) {
 			mockfunc: func() {
 				mock.SQL.ExpectExec("UPDATE TASKS SET completed = true WHERE id = ?").
 					WithArgs(99).
-					WillReturnResult(mock.SQL.NewResult(0, 0)) // Rows affected: 0
+					WillReturnResult(mock.SQL.NewResult(0, 0))
 			},
-			err: nil, // Update operation itself might not return an error if no rows are found.
+			err: nil,
 		},
 		{
 			name:   "Failed UpdateTask - DB error",
@@ -272,7 +272,7 @@ func TestStore_DeleteTask(t *testing.T) {
 			mockfunc: func() {
 				mock.SQL.ExpectExec("DELETE FROM TASKS WHERE id = ?").
 					WithArgs(1).
-					WillReturnResult(mock.SQL.NewResult(0, 1)) // Rows affected: 1
+					WillReturnResult(mock.SQL.NewResult(0, 1))
 			},
 			err: nil,
 		},
@@ -282,9 +282,9 @@ func TestStore_DeleteTask(t *testing.T) {
 			mockfunc: func() {
 				mock.SQL.ExpectExec("DELETE FROM TASKS WHERE id = ?").
 					WithArgs(99).
-					WillReturnResult(mock.SQL.NewResult(0, 0)) // Rows affected: 0
+					WillReturnResult(mock.SQL.NewResult(0, 0))
 			},
-			err: nil, // Delete operation itself might not return an error if no rows are found.
+			err: nil,
 		},
 		{
 			name:   "Failed DeleteTask - DB error",

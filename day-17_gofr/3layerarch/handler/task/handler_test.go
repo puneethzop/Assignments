@@ -42,22 +42,22 @@ func TestCreateTask(t *testing.T) {
 	}{
 		{
 			name:        "Success: Create a new task",
-			requestBody: `{"id":1, "task":"Buy groceries", "completed":false}`,       // Changed "title" to "task"
-			taskModel:   models.Task{ID: 1, Task: "Buy groceries", Completed: false}, // Changed Title to Task
+			requestBody: `{"id":1, "task":"Buy groceries", "completed":false}`,
+			taskModel:   models.Task{ID: 1, Task: "Buy groceries", Completed: false},
 			expected:    gofrResponse{result: "Task created", err: nil},
 			mockService: true,
 		},
 		{
 			name:        "Failure: Invalid JSON request body",
-			requestBody: `{"id":1, "task": "Buy groceries", "completed":}`,            // Changed "title" to "task"
-			taskModel:   models.Task{},                                                // Not used in this case as bind fails
-			expected:    gofrResponse{result: nil, err: errors.New("unexpected EOF")}, // Example error from json.Unmarshal
+			requestBody: `{"id":1, "task": "Buy groceries", "completed":}`,
+			taskModel:   models.Task{},
+			expected:    gofrResponse{result: nil, err: errors.New("unexpected EOF")},
 			mockService: false,
 		},
 		{
 			name:        "Failure: Service returns an error",
-			requestBody: `{"id":2, "task":"Read a book", "completed":true}`,       // Changed "title" to "task"
-			taskModel:   models.Task{ID: 2, Task: "Read a book", Completed: true}, // Changed Title to Task
+			requestBody: `{"id":2, "task":"Read a book", "completed":true}`,
+			taskModel:   models.Task{ID: 2, Task: "Read a book", Completed: true},
 			expected:    gofrResponse{result: nil, err: errors.New("database error")},
 			mockService: true,
 		},
@@ -77,7 +77,7 @@ func TestCreateTask(t *testing.T) {
 			ctx.Request = gofrHttp.NewRequest(req)
 
 			if tt.mockService {
-				if tt.expected.err != nil && tt.expected.result == nil { // Expecting an error from service
+				if tt.expected.err != nil && tt.expected.result == nil {
 					mockService.EXPECT().CreateTask(ctx, tt.taskModel).Return(tt.expected.err)
 				} else { // Expecting success from service
 					mockService.EXPECT().CreateTask(ctx, tt.taskModel).Return(nil)
@@ -88,8 +88,7 @@ func TestCreateTask(t *testing.T) {
 
 			assert.Equal(t, tt.expected.result, result, "Mismatch in result")
 			if tt.expected.err != nil {
-				// For Gofr bind errors, the error type might be specific.
-				// For generic errors, just compare the error string.
+
 				if _, ok := err.(*json.SyntaxError); ok { // Catch common JSON parsing errors
 					assert.IsType(t, &json.SyntaxError{}, err, "Mismatch in error type")
 				} else if _, ok := err.(*json.UnmarshalTypeError); ok {
@@ -124,14 +123,14 @@ func TestGetTask(t *testing.T) {
 			name:        "Success: Get task by ID",
 			taskIDParam: "1",
 			taskID:      1,
-			expected:    gofrResponse{result: models.Task{ID: 1, Task: "Test Task 1", Completed: false}, err: nil}, // Changed Title to Task
+			expected:    gofrResponse{result: models.Task{ID: 1, Task: "Test Task 1", Completed: false}, err: nil},
 			mockService: true,
 		},
 		{
 			name:        "Failure: Invalid ID parameter",
 			taskIDParam: "abc",
-			taskID:      0,                                                                                                   // Not relevant as strconv.Atoi fails
-			expected:    gofrResponse{result: nil, err: &strconv.NumError{Func: "Atoi", Num: "abc", Err: strconv.ErrSyntax}}, // Specific error type
+			taskID:      0,
+			expected:    gofrResponse{result: nil, err: &strconv.NumError{Func: "Atoi", Num: "abc", Err: strconv.ErrSyntax}},
 			mockService: false,
 		},
 		{
@@ -160,7 +159,6 @@ func TestGetTask(t *testing.T) {
 
 			req := httptest.NewRequest(http.MethodGet, "/task/"+tt.taskIDParam, nil)
 
-			// Use mux.SetURLVars to set path parameters on the underlying *http.Request
 			vars := map[string]string{
 				"id": tt.taskIDParam,
 			}
@@ -169,7 +167,7 @@ func TestGetTask(t *testing.T) {
 			ctx.Request = gofrHttp.NewRequest(req)
 
 			if tt.mockService {
-				// Conditionally set the return values for the mock based on whether an error is expected
+
 				if tt.expected.err != nil {
 					mockService.EXPECT().GetTask(ctx, tt.taskID).Return(models.Task{}, tt.expected.err)
 				} else {
@@ -181,7 +179,7 @@ func TestGetTask(t *testing.T) {
 
 			assert.Equal(t, tt.expected.result, result, "Mismatch in result")
 			if tt.expected.err != nil {
-				// Assert specific error type for strconv.Atoi if needed
+
 				if _, ok := tt.expected.err.(*strconv.NumError); ok {
 					assert.IsType(t, tt.expected.err, err, "Mismatch in error type for Atoi")
 					assert.Equal(t, tt.expected.err.Error(), err.Error(), "Mismatch in error message for Atoi")
@@ -213,8 +211,8 @@ func TestViewTasks(t *testing.T) {
 			name: "Success: View all tasks",
 			expected: gofrResponse{
 				result: []models.Task{
-					{ID: 1, Task: "Task A", Completed: false}, // Changed Title to Task
-					{ID: 2, Task: "Task B", Completed: true},  // Changed Title to Task
+					{ID: 1, Task: "Task A", Completed: false},
+					{ID: 2, Task: "Task B", Completed: true},
 				},
 				err: nil,
 			},
@@ -318,7 +316,6 @@ func TestUpdateTask(t *testing.T) {
 			handler := New(mockService)
 
 			req := httptest.NewRequest(http.MethodPut, "/task/"+tt.taskIDParam, nil)
-			// Use mux.SetURLVars to set path parameters on the underlying *http.Request
 			vars := map[string]string{
 				"id": tt.taskIDParam,
 			}
@@ -402,7 +399,6 @@ func TestDeleteTask(t *testing.T) {
 			handler := New(mockService)
 
 			req := httptest.NewRequest(http.MethodDelete, "/task/"+tt.taskIDParam, nil)
-			// Use mux.SetURLVars to set path parameters on the underlying *http.Request
 			vars := map[string]string{
 				"id": tt.taskIDParam,
 			}
