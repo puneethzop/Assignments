@@ -1,0 +1,18 @@
+mode: set
+3layerarch/service/user/mock_interface.go:33.63,37.2 3 1
+3layerarch/service/user/mock_interface.go:40.61,42.2 1 1
+3layerarch/service/user/mock_interface.go:45.76,50.2 4 1
+3layerarch/service/user/mock_interface.go:53.74,56.2 2 1
+3layerarch/service/user/mock_interface.go:59.81,65.2 5 1
+3layerarch/service/user/mock_interface.go:68.72,71.2 2 1
+3layerarch/service/user/service.go:19.36,21.2 1 1
+3layerarch/service/user/service.go:23.70,24.18 1 1
+3layerarch/service/user/service.go:24.18,26.3 1 1
+3layerarch/service/user/service.go:27.2,27.35 1 1
+3layerarch/service/user/service.go:30.75,31.13 1 1
+3layerarch/service/user/service.go:31.13,33.3 1 1
+3layerarch/service/user/service.go:34.2,35.16 2 1
+3layerarch/service/user/service.go:35.16,36.27 1 1
+3layerarch/service/user/service.go:36.27,38.4 1 1
+3layerarch/service/user/service.go:39.3,39.28 1 1
+3layerarch/service/user/service.go:41.2,41.15 1 1
