@@ -50,8 +50,7 @@ func TestStore_CreateTask(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mockfunc()
 
-			var db *sql.DB
-			svc := New(db)
+			svc := New()
 
 			err := svc.CreateTask(ctx, tt.task)
 			if !assert.Equal(t, tt.err, err) {
@@ -107,8 +106,7 @@ func TestStore_GetTask(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mockfunc()
 
-			var db *sql.DB
-			svc := New(db)
+			svc := New()
 
 			ans, err := svc.GetTask(ctx, tt.taskID)
 			if !assert.Equal(t, tt.err, err) {
@@ -176,8 +174,7 @@ func TestStore_ViewTasks(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mockfunc()
 
-			var db *sql.DB
-			svc := New(db)
+			svc := New()
 
 			ans, err := svc.ViewTasks(ctx)
 			if !assert.Equal(t, tt.err, err) {
@@ -240,8 +237,7 @@ func TestStore_UpdateTask(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mockfunc()
 
-			var db *sql.DB
-			svc := New(db)
+			svc := New()
 
 			err := svc.UpdateTask(ctx, tt.taskID)
 			if !assert.Equal(t, tt.err, err) {
@@ -301,8 +297,7 @@ func TestStore_DeleteTask(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mockfunc()
 
-			var db *sql.DB
-			svc := New(db)
+			svc := New()
 
 			err := svc.DeleteTask(ctx, tt.taskID)
 			if !assert.Equal(t, tt.err, err) {

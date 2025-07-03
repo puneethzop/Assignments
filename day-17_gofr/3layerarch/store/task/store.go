@@ -2,17 +2,15 @@ package taskstore
 
 import (
 	"3layerarch/models"
-	"database/sql"
 	"gofr.dev/pkg/gofr"
 	"log"
 )
 
 type Store struct {
-	db *sql.DB
 }
 
-func New(db *sql.DB) *Store {
-	return &Store{db: db}
+func New() *Store {
+	return &Store{}
 }
 
 func (s *Store) CreateTask(ctx *gofr.Context, t models.Task) error {

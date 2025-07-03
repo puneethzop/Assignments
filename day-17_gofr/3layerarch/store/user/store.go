@@ -2,16 +2,14 @@ package userstore
 
 import (
 	"3layerarch/models"
-	"database/sql"
 	"gofr.dev/pkg/gofr"
 )
 
 type Store struct {
-	db *sql.DB
 }
 
-func New(db *sql.DB) *Store {
-	return &Store{db: db}
+func New() *Store {
+	return &Store{}
 }
 
 func (s *Store) CreateUser(ctx *gofr.Context, u models.User) error {
