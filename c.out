@@ -1,0 +1,16 @@
+mode: set
+Assignment/main.go:7.13,9.2 1 0
+Assignment/day-4/main.go:14.39,16.2 1 0
+Assignment/day-4/main.go:19.47,20.17 1 0
+Assignment/day-4/main.go:20.17,23.3 2 0
+Assignment/day-4/main.go:24.2,25.65 2 0
+Assignment/day-4/main.go:29.48,30.24 1 0
+Assignment/day-4/main.go:30.24,33.3 2 0
+Assignment/day-4/main.go:34.2,35.66 2 0
+Assignment/day-4/main.go:38.13,45.6 5 0
+Assignment/day-4/main.go:45.6,54.17 8 0
+Assignment/day-4/main.go:55.10,56.28 1 0
+Assignment/day-4/main.go:57.10,61.27 4 0
+Assignment/day-4/main.go:62.10,66.28 4 0
+Assignment/day-4/main.go:67.10,69.10 2 0
+Assignment/day-4/main.go:70.11,71.55 1 0

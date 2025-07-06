@@ -1,0 +1,18 @@
+mode: set
+3layerarch/handler/user/handler.go:14.40,16.2 1 1
+3layerarch/handler/user/handler.go:28.70,30.37 2 1
+3layerarch/handler/user/handler.go:30.37,32.3 1 1
+3layerarch/handler/user/handler.go:34.2,34.53 1 1
+3layerarch/handler/user/handler.go:34.53,36.3 1 1
+3layerarch/handler/user/handler.go:38.2,38.21 1 1
+3layerarch/handler/user/handler.go:50.67,53.16 3 1
+3layerarch/handler/user/handler.go:53.16,55.3 1 1
+3layerarch/handler/user/handler.go:57.2,58.16 2 1
+3layerarch/handler/user/handler.go:58.16,60.3 1 0
+3layerarch/handler/user/handler.go:62.2,62.15 1 1
+3layerarch/handler/user/mock_interface.go:33.67,37.2 3 1
+3layerarch/handler/user/mock_interface.go:40.65,42.2 1 1
+3layerarch/handler/user/mock_interface.go:45.78,50.2 4 1
+3layerarch/handler/user/mock_interface.go:53.76,56.2 2 1
+3layerarch/handler/user/mock_interface.go:59.83,65.2 5 1
+3layerarch/handler/user/mock_interface.go:68.74,71.2 2 1
