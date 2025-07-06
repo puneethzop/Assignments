@@ -16,8 +16,6 @@ package main
 
 import (
 	"3layerarch/migrations/migrations"
-	"database/sql"
-	"log"
 
 	taskhandler "3layerarch/handler/task"
 	userhandler "3layerarch/handler/user"
@@ -59,4 +57,5 @@ func main() {
 	app.GET("/user/{id}", userHandler.GetUser)
 
 	app.Run()
+	          
 }
