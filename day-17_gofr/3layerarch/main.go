@@ -26,7 +26,7 @@ import (
 	taskstore "3layerarch/store/task"
 	userstore "3layerarch/store/user"
 
-	_ "3layerarch/docs" // Swagger generated files
+	_ "3layerarch/docs" // Swagger generated
 
 	_ "github.com/go-sql-driver/mysql"
 	"gofr.dev/pkg/gofr"
@@ -57,5 +57,5 @@ func main() {
 	app.GET("/user/{id}", userHandler.GetUser)
 
 	app.Run()
-	          
+
 }
